@@ -36,8 +36,8 @@ export class AqualisaPlatform implements DynamicPlatformPlugin {
     // EXAMPLE ONLY
     const exampleDevices = [
       {
-        exampleUniqueId: 'BOOB',
-        exampleDisplayName: 'Bathroom Aqualisa SmartValve',
+        exampleUniqueId: 'SV',
+        exampleDisplayName: 'Aqualisa SmartValve',
       },
     ];
     // loop over the discovered devices and register each one if it has not already been registered
