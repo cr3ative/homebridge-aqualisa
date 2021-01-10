@@ -142,7 +142,7 @@ export class AqualisaPlatformAccessory {
   }
 
   getMainValveRunning(callback: CharacteristicGetCallback) {
-    const isActive = this.smartValveState.MainValveRunning;
+    const isActive = this.smartValveState.MainValveRunning as boolean;
     this.platform.log.debug('Get main valve ->', isActive);
     callback(null, isActive);
   }
@@ -180,7 +180,7 @@ export class AqualisaPlatformAccessory {
   }
 
   getShowerValve(callback: CharacteristicGetCallback) {
-    const isActive = this.smartValveState.ShowerValveRunning;
+    const isActive = this.smartValveState.ShowerValveRunning as boolean;
     this.platform.log.debug('Get shower valve ->', isActive);
     callback(null, isActive);
   }
@@ -220,7 +220,7 @@ export class AqualisaPlatformAccessory {
   }
 
   getBathValve(callback: CharacteristicGetCallback) {
-    const isActive = this.smartValveState.BathValveRunning;
+    const isActive = this.smartValveState.BathValveRunning as boolean;
     this.platform.log.debug('Get bath valve ->', isActive);
     callback(null, isActive);
   }
