@@ -23,14 +23,16 @@ export class AqualisaPlatformAccessory {
     // Set root accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Aqualisa')
-      .setCharacteristic(this.platform.Characteristic.Model, 'Quartz Touch')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.exampleUniqueId);
+      .setCharacteristic(this.platform.Characteristic.Model, 'SmartValve')
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.serialNumber);
 
     // Create the main faucet service
     this.mainService = this.accessory.getService(this.platform.Service.Faucet) || this.accessory.addService(this.platform.Service.Faucet);
 
     // Add Heater/Cooler Service for Temperature Adjustment to main service
-    this.heaterCoolerService = this.accessory.getService('Heater') || this.accessory.addService(this.platform.Service.HeaterCooler, 'Heater', 'Heater');
+    this.heaterCoolerService = 
+      this.accessory.getService('Heater') || 
+      this.accessory.addService(this.platform.Service.HeaterCooler, 'Heater', 'Heater');
     this.mainService.addLinkedService(this.heaterCoolerService);
 
     this.mainService
@@ -64,7 +66,9 @@ export class AqualisaPlatformAccessory {
 
     // Shower head
     const shName = 'Shower';
-    this.showerHeadService = this.accessory.getService(shName) || this.accessory.addService(this.platform.Service.Valve, shName, 'Valve-1'); 
+    this.showerHeadService = 
+      this.accessory.getService(shName) || 
+      this.accessory.addService(this.platform.Service.Valve, shName, 'Valve-1'); 
 
     // Required Characteristics
     this.showerHeadService
@@ -83,7 +87,9 @@ export class AqualisaPlatformAccessory {
 
     // Bath filler
     const bthName = 'Bath';
-    this.bathFillerService = this.accessory.getService(bthName) || this.accessory.addService(this.platform.Service.Valve, bthName, 'Valve-2');
+    this.bathFillerService = 
+      this.accessory.getService(bthName) || 
+      this.accessory.addService(this.platform.Service.Valve, bthName, 'Valve-2');
     this.bathFillerService
       .setCharacteristic(this.platform.Characteristic.ServiceLabelNamespace, 1)
       .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 2)

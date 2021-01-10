@@ -33,16 +33,16 @@ export class AqualisaPlatform implements DynamicPlatformPlugin {
   }
 
   discoverDevices() {
-    // EXAMPLE ONLY
-    const exampleDevices = [
+    // Example only, enumerate from API
+    const devices = [
       {
-        exampleUniqueId: 'SV',
-        exampleDisplayName: 'Aqualisa SmartValve',
+        serialNumber: 'SV',
+        displayName: 'Aqualisa SmartValve',
       },
     ];
     // loop over the discovered devices and register each one if it has not already been registered
-    for (const device of exampleDevices) {
-      const uuid = this.api.hap.uuid.generate(device.exampleUniqueId);
+    for (const device of devices) {
+      const uuid = this.api.hap.uuid.generate(device.serialNumber);
       const existingAccessory = this.accessories.find(accessory => accessory.UUID === uuid);
       if (existingAccessory) {
         if (device) {
@@ -54,8 +54,8 @@ export class AqualisaPlatform implements DynamicPlatformPlugin {
           this.log.info('Removing existing accessory from cache:', existingAccessory.displayName);
         }
       } else {
-        this.log.info('Adding new accessory:', device.exampleDisplayName);
-        const accessory = new this.api.platformAccessory(device.exampleDisplayName, uuid);
+        this.log.info('Adding new accessory:', device.displayName);
+        const accessory = new this.api.platformAccessory(device.displayName, uuid);
         accessory.context.device = device;
         new AqualisaPlatformAccessory(this, accessory);
         this.api.registerPlatformAccessories(PLUGIN_NAME, PLATFORM_NAME, [accessory]);
