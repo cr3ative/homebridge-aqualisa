@@ -1,16 +1,16 @@
 {
   "private": true,
-  "displayName": "Plugin Name",
-  "name": "homebridge-plugin-name",
+  "displayName": "Aqualisa Shower",
+  "name": "homebridge-aqualisa-shower",
   "version": "1.0.0",
-  "description": "A short description about what your plugin does.",
+  "description": "Control for an Aqualisa Quartz Touch shower.",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "git://github.com/USERNAME/GITHUB_PROJECT_NAME.git"
+    "url": "git://github.com/cr3ative/homebridge-aqualisa.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/GITHUB_PROJECT_NAME/issues"
+    "url": "https://github.com/cr3ative/homebridge-aqualisa/issues"
   },
   "engines": {
     "node": ">=10.17.0",

@@ -1,5 +1,5 @@
 {
-  "pluginAlias": "ExampleHomebridgePlugin",
+  "pluginAlias": "AqualisaShower",
   "pluginType": "platform",
   "singular": true,
   "schema": {
