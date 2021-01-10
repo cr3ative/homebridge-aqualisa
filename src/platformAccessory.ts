@@ -240,27 +240,27 @@ export class ExamplePlatformAccessory {
 
   setMainTemp(value: CharacteristicValue, callback: CharacteristicSetCallback) {
     this.smartValveState.Temperature = value as number;
-    this.platform.log.debug('Set Characteristic temp -> ', value);
+    this.platform.log.debug('Set temperature to', value);
     this.mainService.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, value);
     callback();
   }
 
   getMainTemp(callback: CharacteristicSetCallback) {
     const temp = this.smartValveState.Temperature;
-    this.platform.log.debug('Get Characteristic temp -> ', temp);
+    this.platform.log.debug('Get temperature, it\'s ', temp);
     callback(null, temp);
   }
 
   setHeatCoolState(value: CharacteristicValue, callback: CharacteristicSetCallback) {
     this.smartValveState.HeatCool = value as number;
-    this.platform.log.debug('Set Characteristic Heat/Cool -> ', value);
+    this.platform.log.debug('Set Heat/Cool State (0 is Auto) -> ', value);
     this.mainService.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, value);
     callback();
   }
 
   getHeatCoolState(callback: CharacteristicSetCallback) {
     const hc = this.smartValveState.HeatCool as number;
-    this.platform.log.debug('Get Characteristic Heat/Cool -> ', hc);
+    this.platform.log.debug('Set Heat/Cool State (0 is Auto), it\'s ', hc);
     callback(null, hc);
   }
 
