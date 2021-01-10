@@ -1,22 +1,17 @@
-import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback } from 'homebridge';
+// Note: This is going to look like https://github.com/homebridge/HAP-NodeJS/issues/665#issuecomment-486519878
 
+import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback } from 'homebridge';
 import { ExampleHomebridgePlatform } from './platform';
 
-/**
- * Platform Accessory
- * An instance of this class is created for each accessory your platform registers
- * Each accessory may expose multiple services of different service types.
- */
 export class ExamplePlatformAccessory {
-  private service: Service;
+  private mainService: Service;
+  private showerHeadService: Service;
+  private bathFillerService: Service;
 
-  /**
-   * These are just used to create a working example
-   * You should implement your own code to track the state of your accessory
-   */
-  private exampleStates = {
-    On: false,
-    Brightness: 100,
+  private smartValveState = {
+    MainValveRunning: false,
+    ShowerValveRunning: false,
+    BathValveRunning: false,
   };
 
   constructor(
@@ -26,126 +21,192 @@ export class ExamplePlatformAccessory {
 
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
-      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Default-Manufacturer')
-      .setCharacteristic(this.platform.Characteristic.Model, 'Default-Model')
-      .setCharacteristic(this.platform.Characteristic.SerialNumber, 'Default-Serial');
+      .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Aqualisa')
+      .setCharacteristic(this.platform.Characteristic.Model, 'Quartz Touch')
+      .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.exampleUniqueId);
 
-    // get the LightBulb service if it exists, otherwise create a new LightBulb service
-    // you can create multiple services for each accessory
-    this.service = this.accessory.getService(this.platform.Service.Lightbulb) || this.accessory.addService(this.platform.Service.Lightbulb);
+    // create the main faucet service
+    this.mainService = this.accessory.getService(this.platform.Service.Faucet) || this.accessory.addService(this.platform.Service.Faucet);
+    this.mainService.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.exampleDisplayName);
 
-    // set the service name, this is what is displayed as the default name on the Home app
-    // in this example we are using the name we stored in the `accessory.context` in the `discoverDevices` method.
-    this.service.setCharacteristic(this.platform.Characteristic.Name, accessory.context.device.exampleDisplayName);
+    // Logic for faucets:
+    // Active=0, InUse=0 -> Off
+    // Active=1, InUse=0 -> Starting
+    // Active=1, InUse=1 -> Running
+    // Active=0, InUse=1 -> Stopping
 
-    // each service must implement at-minimum the "required characteristics" for the given service type
-    // see https://developers.homebridge.io/#/service/Lightbulb
+    this.mainService
+      .setCharacteristic(this.platform.Characteristic.Active, 0)
+      .getCharacteristic(this.platform.Characteristic.Active)
+      .on('set', this.setMainValveRunning.bind(this))
+      .on('get', this.getMainValveRunning.bind(this));
 
-    // register handlers for the On/Off Characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.On)
-      .on('set', this.setOn.bind(this))                // SET - bind to the `setOn` method below
-      .on('get', this.getOn.bind(this));               // GET - bind to the `getOn` method below
+    this.mainService
+      .setCharacteristic(this.platform.Characteristic.InUse, 0)
+      .getCharacteristic(this.platform.Characteristic.InUse)
+      .on('set', this.setMainValveRunning.bind(this))
+      .on('get', this.getMainValveRunning.bind(this));
 
-    // register handlers for the Brightness Characteristic
-    this.service.getCharacteristic(this.platform.Characteristic.Brightness)
-      .on('set', this.setBrightness.bind(this));       // SET - bind to the 'setBrightness` method below
+    const showerExists = this.accessory.getService('Shower Head');
+    if (showerExists) {
+      this.showerHeadService = showerExists;
+    } else {
+      this.showerHeadService = this.accessory.addService(this.platform.Service.Valve, 'Shower Head', 'Valve-1');
+      this.mainService.addLinkedService(this.showerHeadService);
+    }
 
+    const bathFillerExists = this.accessory.getService('Bath Filler');
+    if (bathFillerExists) {
+      this.bathFillerService = bathFillerExists;
+    } else {
+      this.bathFillerService = this.accessory.addService(this.platform.Service.Valve, 'Bath Filler', 'Valve-2');
+      this.mainService.addLinkedService(this.bathFillerService);
+    }
 
-    /**
-     * Creating multiple services of the same type.
-     * 
-     * To avoid "Cannot add a Service with the same UUID another Service without also defining a unique 'subtype' property." error,
-     * when creating multiple services of the same type, you need to use the following syntax to specify a name and subtype id:
-     * this.accessory.getService('NAME') || this.accessory.addService(this.platform.Service.Lightbulb, 'NAME', 'USER_DEFINED_SUBTYPE_ID');
-     * 
-     * The USER_DEFINED_SUBTYPE must be unique to the platform accessory (if you platform exposes multiple accessories, each accessory
-     * can use the same sub type id.)
-     */
+    // Required Characteristics
+    this.showerHeadService
+      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
+      .setCharacteristic(this.platform.Characteristic.Active, 0)
+      .setCharacteristic(this.platform.Characteristic.InUse, 0)
+      .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 1)
+      .setCharacteristic(this.platform.Characteristic.IsConfigured, this.platform.Characteristic.IsConfigured.CONFIGURED)
+      .setCharacteristic(this.platform.Characteristic.ValveType, this.platform.Characteristic.ValveType.SHOWER_HEAD)
+      .setCharacteristic(this.platform.Characteristic.ConfiguredName, 'Shower Head');
 
-    // Example: add two "motion sensor" services to the accessory
-    const motionSensorOneService = this.accessory.getService('Motion Sensor One Name') ||
-      this.accessory.addService(this.platform.Service.MotionSensor, 'Motion Sensor One Name', 'YourUniqueIdentifier-1');
+    this.showerHeadService.getCharacteristic(this.platform.Characteristic.Active)
+      .on('set', this.setShowerValve.bind(this))
+      .on('get', this.getShowerValve.bind(this));
+    
+    this.bathFillerService
+      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
+      .setCharacteristic(this.platform.Characteristic.Active, 0)
+      .setCharacteristic(this.platform.Characteristic.InUse, 0)
+      .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 1)
+      .setCharacteristic(this.platform.Characteristic.IsConfigured, this.platform.Characteristic.IsConfigured.CONFIGURED)
+      .setCharacteristic(this.platform.Characteristic.ValveType, this.platform.Characteristic.ValveType.WATER_FAUCET)
+      .setCharacteristic(this.platform.Characteristic.ConfiguredName, 'Bath Filler');
 
-    const motionSensorTwoService = this.accessory.getService('Motion Sensor Two Name') ||
-      this.accessory.addService(this.platform.Service.MotionSensor, 'Motion Sensor Two Name', 'YourUniqueIdentifier-2');
+    this.bathFillerService.getCharacteristic(this.platform.Characteristic.Active)
+      .on('set', this.setBathValve.bind(this))
+      .on('get', this.getBathValve.bind(this));
 
-    /**
-     * Updating characteristics values asynchronously.
-     * 
-     * Example showing how to update the state of a Characteristic asynchronously instead
-     * of using the `on('get')` handlers.
-     * Here we change update the motion sensor trigger states on and off every 10 seconds
-     * the `updateCharacteristic` method.
-     * 
-     */
-    let motionDetected = false;
-    setInterval(() => {
-      // EXAMPLE - inverse the trigger
-      motionDetected = !motionDetected;
-
-      // push the new value to HomeKit
-      motionSensorOneService.updateCharacteristic(this.platform.Characteristic.MotionDetected, motionDetected);
-      motionSensorTwoService.updateCharacteristic(this.platform.Characteristic.MotionDetected, !motionDetected);
-
-      this.platform.log.debug('Triggering motionSensorOneService:', motionDetected);
-      this.platform.log.debug('Triggering motionSensorTwoService:', !motionDetected);
-    }, 10000);
   }
 
-  /**
-   * Handle "SET" requests from HomeKit
-   * These are sent when the user changes the state of an accessory, for example, turning on a Light bulb.
-   */
-  setOn(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+  setMainValveRunning(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+    this.smartValveState.MainValveRunning = value as boolean;
+    this.platform.log.debug('Main valve to ', value);
 
-    // implement your own code to turn your device on/off
-    this.exampleStates.On = value as boolean;
+    if (value === 0) {
+      // deactivate both valves
+      this.platform.log.debug('Turning both child valves off');
+      this.smartValveState.ShowerValveRunning = false as boolean;
+      this.smartValveState.BathValveRunning = false as boolean;
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, false);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, false);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, false);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, false);
+    } else {
+      if (!this.smartValveState.BathValveRunning && !this.smartValveState.ShowerValveRunning) {
+        // shower by default
+        this.platform.log.debug('Both valves were off, activating shower');
+        this.smartValveState.BathValveRunning = true; // logic bodge
+        this.setShowerValve(1, () => 0);
+      }
+    }
 
-    this.platform.log.debug('Set Characteristic On ->', value);
-
-    // you must call the callback function
+    this.mainService.updateCharacteristic(this.platform.Characteristic.InUse, value);
+    this.mainService.updateCharacteristic(this.platform.Characteristic.Active, value);
     callback(null);
   }
 
-  /**
-   * Handle the "GET" requests from HomeKit
-   * These are sent when HomeKit wants to know the current state of the accessory, for example, checking if a Light bulb is on.
-   * 
-   * GET requests should return as fast as possbile. A long delay here will result in
-   * HomeKit being unresponsive and a bad user experience in general.
-   * 
-   * If your device takes time to respond you should update the status of your device
-   * asynchronously instead using the `updateCharacteristic` method instead.
-
-   * @example
-   * this.service.updateCharacteristic(this.platform.Characteristic.On, true)
-   */
-  getOn(callback: CharacteristicGetCallback) {
-
-    // implement your own code to check if the device is on
-    const isOn = this.exampleStates.On;
-
-    this.platform.log.debug('Get Characteristic On ->', isOn);
-
-    // you must call the callback function
-    // the first argument should be null if there were no errors
-    // the second argument should be the value to return
-    callback(null, isOn);
+  getMainValveRunning(callback: CharacteristicGetCallback) {
+    const isActive = this.smartValveState.MainValveRunning;
+    this.platform.log.debug('Get main valve ->', isActive);
+    callback(null, isActive);
   }
 
-  /**
-   * Handle "SET" requests from HomeKit
-   * These are sent when the user changes the state of an accessory, for example, changing the Brightness
-   */
-  setBrightness(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+  setShowerValve(value: CharacteristicValue, callback: CharacteristicSetCallback) {
 
-    // implement your own code to set the brightness
-    this.exampleStates.Brightness = value as number;
+    // Figure out intent
 
-    this.platform.log.debug('Set Characteristic Brightness -> ', value);
+    if (value as boolean && this.smartValveState.BathValveRunning as boolean) {
+      // Bath is currently running, but they want shower. Switch valve selection to Shower.
+      this.platform.log.debug('Switching from Bath to Shower');
+      this.smartValveState.BathValveRunning = false as boolean;
+      this.smartValveState.ShowerValveRunning = true as boolean;
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, value);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, value);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, !value);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, !value);  
+    } else if (!value as boolean && this.smartValveState.ShowerValveRunning) {
+      // Shower is currently running. Turn it off along with the main valve.
+      this.platform.log.debug('Switching off shower and main valve');
+      this.smartValveState.ShowerValveRunning = false as boolean;
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);
+      this.setMainValveRunning(0, () => 0);
+    } else if (value as boolean && !this.smartValveState.MainValveRunning as boolean) {
+      // Shower to be switched on, but main valve is off
+      this.platform.log.debug('Switching on shower and main valve');
+      this.smartValveState.ShowerValveRunning = true as boolean;
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
+      this.setMainValveRunning(1, () => 0);
+    } else if (!value as boolean && this.smartValveState.MainValveRunning as boolean) {
+      // Bath to be switched off, but main valve is on
+      this.platform.log.debug('Switching off shower and main valve');
+      this.setMainValveRunning(0, () => 0);
+    }
 
-    // you must call the callback function
     callback(null);
+  }
+
+  getShowerValve(callback: CharacteristicGetCallback) {
+    const isActive = this.smartValveState.ShowerValveRunning;
+    this.platform.log.debug('Get shower valve ->', isActive);
+    callback(null, isActive);
+  }
+
+  setBathValve(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+
+    // Figure out intent
+    if (value as boolean && this.smartValveState.ShowerValveRunning as boolean) {
+      // Shower is currently running, but they want bath. Switch valve selection to Shower.
+      this.platform.log.debug('Switching from Shower to Bath');
+      this.smartValveState.BathValveRunning = true as boolean;
+      this.smartValveState.ShowerValveRunning = false as boolean;
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, !value);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, !value);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, value);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, value);  
+    } else if (!value as boolean && this.smartValveState.BathValveRunning) {
+      // Bath is currently running. Turn it off along with the main valve.
+      this.platform.log.debug('Switching off bath and main valve');
+      this.smartValveState.BathValveRunning = false as boolean;
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);
+      this.setMainValveRunning(0, () => 0);
+    } else if (value as boolean && !this.smartValveState.MainValveRunning as boolean) {
+      // Bath to be switched on, but main valve is off
+      this.platform.log.debug('Switching on bath and main valve');
+      this.smartValveState.BathValveRunning = true as boolean;
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
+      this.setMainValveRunning(1, () => 0);
+    } else if (!value as boolean && this.smartValveState.MainValveRunning as boolean) {
+      // Bath to be switched off, but main valve is on
+      this.platform.log.debug('Switching off bath and main valve');
+      this.setMainValveRunning(0, () => 0);
+    }
+
+    callback(null);
+    
+  }
+
+  getBathValve(callback: CharacteristicGetCallback) {
+    const isActive = this.smartValveState.BathValveRunning;
+    this.platform.log.debug('Get bath valve ->', isActive);
+    callback(null, isActive);
   }
 
 }
