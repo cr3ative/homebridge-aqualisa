@@ -1,9 +1,9 @@
 // Note: This is going to look like https://github.com/homebridge/HAP-NodeJS/issues/665#issuecomment-486519878
 
 import { Service, PlatformAccessory, CharacteristicValue, CharacteristicSetCallback, CharacteristicGetCallback } from 'homebridge';
-import { ExampleHomebridgePlatform } from './platform';
+import { AqualisaPlatform } from './platform';
 
-export class ExamplePlatformAccessory {
+export class AqualisaPlatformAccessory {
   private mainService: Service;
   private showerHeadService: Service;
   private bathFillerService: Service;
@@ -18,7 +18,7 @@ export class ExamplePlatformAccessory {
   };
 
   constructor(
-    private readonly platform: ExampleHomebridgePlatform,
+    private readonly platform: AqualisaPlatform,
     private readonly accessory: PlatformAccessory,
   ) {
     // set accessory information
