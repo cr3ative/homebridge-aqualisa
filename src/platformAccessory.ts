@@ -25,12 +25,6 @@ export class AqualisaPlatformAccessory {
       .setCharacteristic(this.platform.Characteristic.Model, 'Quartz Touch')
       .setCharacteristic(this.platform.Characteristic.SerialNumber, accessory.context.device.exampleUniqueId);
 
-    // Logic for faucets:
-    // Active=0, InUse=0 -> Off
-    // Active=1, InUse=0 -> Starting
-    // Active=1, InUse=1 -> Running
-    // Active=0, InUse=1 -> Stopping
-
     // Create the main faucet service
     this.mainService = this.accessory.getService(this.platform.Service.Faucet) || this.accessory.addService(this.platform.Service.Faucet);
 
@@ -76,7 +70,6 @@ export class AqualisaPlatformAccessory {
 
     // Required Characteristics
     this.showerHeadService
-      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
       .setCharacteristic(this.platform.Characteristic.Active, 0)
       .setCharacteristic(this.platform.Characteristic.InUse, 0)
       .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 1)
@@ -94,7 +87,6 @@ export class AqualisaPlatformAccessory {
     this.mainService.addLinkedService(this.bathFillerService);
 
     this.bathFillerService
-      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
       .setCharacteristic(this.platform.Characteristic.Active, 0)
       .setCharacteristic(this.platform.Characteristic.InUse, 0)
       .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 2)
@@ -126,14 +118,27 @@ export class AqualisaPlatformAccessory {
       if (!this.smartValveState.BathValveRunning && !this.smartValveState.ShowerValveRunning) {
         // shower by default
         this.platform.log.debug('Both valves were off, activating shower');
-        this.smartValveState.BathValveRunning = true; // logic bodge
+        // logic bodge
+        this.smartValveState.BathValveRunning = true;
         this.setShowerValve(1, () => 0);
       }
     }
 
-    this.mainService.updateCharacteristic(this.platform.Characteristic.InUse, value);
-    this.mainService.updateCharacteristic(this.platform.Characteristic.Active, value);
-    callback(null);
+    // Active=0, InUse=0 -> Off
+    // Active=1, InUse=0 -> Starting
+    // Active=1, InUse=1 -> Running
+    // Active=0, InUse=1 -> Stopping
+  
+    // Active updates immediately
+    this.platform.log.debug('Active to ', value);
+    this.mainService.updateCharacteristic(this.platform.Characteristic.Active, value);  
+    // InUse indicates it's actually running, so wait on API
+    this.doAPIThing().then(() => {
+      this.platform.log.debug('InUse to ', value);
+      this.mainService.updateCharacteristic(this.platform.Characteristic.InUse, value);
+      callback(null);
+    });
+
   }
 
   getMainValveRunning(callback: CharacteristicGetCallback) {
@@ -151,22 +156,18 @@ export class AqualisaPlatformAccessory {
       this.platform.log.debug('Switching from Bath to Shower');
       this.smartValveState.BathValveRunning = false as boolean;
       this.smartValveState.ShowerValveRunning = true as boolean;
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
       this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
       this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);  
     } else if (!value as boolean && this.smartValveState.ShowerValveRunning) {
       // Shower is currently running. Turn it off along with the main valve.
       this.platform.log.debug('Switching off shower and main valve');
       this.smartValveState.ShowerValveRunning = false as boolean;
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
       this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);
       this.setMainValveRunning(0, () => 0);
     } else if (value as boolean && !this.smartValveState.MainValveRunning as boolean) {
       // Shower to be switched on, but main valve is off
       this.platform.log.debug('Switching on shower and main valve');
       this.smartValveState.ShowerValveRunning = true as boolean;
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
       this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
       this.setMainValveRunning(1, () => 0);
     } else if (!value as boolean && this.smartValveState.MainValveRunning as boolean) {
@@ -194,22 +195,18 @@ export class AqualisaPlatformAccessory {
       this.platform.log.debug('Switching from Shower to Bath');
       this.smartValveState.BathValveRunning = true as boolean;
       this.smartValveState.ShowerValveRunning = false as boolean;
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, !value);
       this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, !value);
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, value);
       this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, value);  
     } else if (!value as boolean && this.smartValveState.BathValveRunning) {
       // Bath is currently running. Turn it off along with the main valve.
       this.platform.log.debug('Switching off bath and main valve');
       this.smartValveState.BathValveRunning = false as boolean;
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
       this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);
       this.setMainValveRunning(0, () => 0);
     } else if (value as boolean && !this.smartValveState.MainValveRunning as boolean) {
       // Bath to be switched on, but main valve is off
       this.platform.log.debug('Switching on bath and main valve');
       this.smartValveState.BathValveRunning = true as boolean;
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
       this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
       this.setMainValveRunning(1, () => 0);
     } else if (!value as boolean && this.smartValveState.MainValveRunning as boolean) {
@@ -251,6 +248,18 @@ export class AqualisaPlatformAccessory {
   getHeatCoolState(callback: CharacteristicSetCallback) {
     const hc = this.smartValveState.HeatCool as number;
     callback(null, hc);
+  }
+
+  doAPIThing() {
+    return this.delay(2000).then((() => {
+      return true;
+    }));
+  }
+
+  delay(t) {
+    return new Promise((resolve) => { 
+      setTimeout(resolve.bind(null), t);
+    });
   }
 
 }
