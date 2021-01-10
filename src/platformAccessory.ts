@@ -63,15 +63,15 @@ export class AqualisaPlatformAccessory {
     // Add child valves
 
     // Shower head
-    this.showerHeadService = this.accessory.getService('Shower Head') || this.accessory.addService(this.platform.Service.Valve, 'Shower Head', 'Valve-1'); 
+    const shName = 'Shower';
+    this.showerHeadService = this.accessory.getService(shName) || this.accessory.addService(this.platform.Service.Valve, shName, 'Valve-1'); 
 
     // Required Characteristics
     this.showerHeadService
-      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
       .setCharacteristic(this.platform.Characteristic.ServiceLabelNamespace, 1)
       .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 1)
       .setCharacteristic(this.platform.Characteristic.ValveType, this.platform.Characteristic.ValveType.SHOWER_HEAD)
-      .setCharacteristic(this.platform.Characteristic.ConfiguredName, 'Shower Head')
+      .setCharacteristic(this.platform.Characteristic.ConfiguredName, shName)
       .setCharacteristic(this.platform.Characteristic.Active, 1);
     
     this.showerHeadService
@@ -82,13 +82,13 @@ export class AqualisaPlatformAccessory {
     this.mainService.addLinkedService(this.showerHeadService);
 
     // Bath filler
-    this.bathFillerService = this.accessory.getService('Bath Filler') || this.accessory.addService(this.platform.Service.Valve, 'Bath Filler', 'Valve-2');
+    const bthName = 'Bath';
+    this.bathFillerService = this.accessory.getService(bthName) || this.accessory.addService(this.platform.Service.Valve, bthName, 'Valve-2');
     this.bathFillerService
-      .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
       .setCharacteristic(this.platform.Characteristic.ServiceLabelNamespace, 1)
       .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 2)
       .setCharacteristic(this.platform.Characteristic.ValveType, this.platform.Characteristic.ValveType.WATER_FAUCET)
-      .setCharacteristic(this.platform.Characteristic.ConfiguredName, 'Bath Filler')
+      .setCharacteristic(this.platform.Characteristic.ConfiguredName, bthName)
       .setCharacteristic(this.platform.Characteristic.Active, 0);
     
     this.bathFillerService
