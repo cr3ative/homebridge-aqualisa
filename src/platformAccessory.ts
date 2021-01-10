@@ -7,18 +7,20 @@ export class ExamplePlatformAccessory {
   private mainService: Service;
   private showerHeadService: Service;
   private bathFillerService: Service;
+  private heaterCoolerService: Service;
 
   private smartValveState = {
     MainValveRunning: false,
     ShowerValveRunning: false,
     BathValveRunning: false,
+    Temperature: 20,
+    HeatCool: 0, // Auto
   };
 
   constructor(
     private readonly platform: ExampleHomebridgePlatform,
     private readonly accessory: PlatformAccessory,
   ) {
-
     // set accessory information
     this.accessory.getService(this.platform.Service.AccessoryInformation)!
       .setCharacteristic(this.platform.Characteristic.Manufacturer, 'Aqualisa')
@@ -46,22 +48,22 @@ export class ExamplePlatformAccessory {
       .getCharacteristic(this.platform.Characteristic.InUse)
       .on('set', this.setMainValveRunning.bind(this))
       .on('get', this.getMainValveRunning.bind(this));
-
+        
     const showerExists = this.accessory.getService('Shower Head');
     if (showerExists) {
       this.showerHeadService = showerExists;
     } else {
       this.showerHeadService = this.accessory.addService(this.platform.Service.Valve, 'Shower Head', 'Valve-1');
-      this.mainService.addLinkedService(this.showerHeadService);
     }
+    this.mainService.addLinkedService(this.showerHeadService);
 
     const bathFillerExists = this.accessory.getService('Bath Filler');
     if (bathFillerExists) {
       this.bathFillerService = bathFillerExists;
     } else {
       this.bathFillerService = this.accessory.addService(this.platform.Service.Valve, 'Bath Filler', 'Valve-2');
-      this.mainService.addLinkedService(this.bathFillerService);
     }
+    this.mainService.addLinkedService(this.bathFillerService);
 
     // Required Characteristics
     this.showerHeadService
@@ -81,7 +83,7 @@ export class ExamplePlatformAccessory {
       .setCharacteristic(this.platform.Characteristic.Name, this.accessory.displayName + ' Valve')
       .setCharacteristic(this.platform.Characteristic.Active, 0)
       .setCharacteristic(this.platform.Characteristic.InUse, 0)
-      .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 1)
+      .setCharacteristic(this.platform.Characteristic.ServiceLabelIndex, 2)
       .setCharacteristic(this.platform.Characteristic.IsConfigured, this.platform.Characteristic.IsConfigured.CONFIGURED)
       .setCharacteristic(this.platform.Characteristic.ValveType, this.platform.Characteristic.ValveType.WATER_FAUCET)
       .setCharacteristic(this.platform.Characteristic.ConfiguredName, 'Bath Filler');
@@ -89,6 +91,31 @@ export class ExamplePlatformAccessory {
     this.bathFillerService.getCharacteristic(this.platform.Characteristic.Active)
       .on('set', this.setBathValve.bind(this))
       .on('get', this.getBathValve.bind(this));
+
+    // Add temp
+
+    const tempService = this.accessory.getService('Heater');
+    if (tempService) {
+      this.heaterCoolerService = tempService;
+    } else {
+      this.heaterCoolerService = this.accessory.addService(this.platform.Service.HeaterCooler, 'Heater', 'Heater');
+    }
+    this.mainService.addLinkedService(this.heaterCoolerService);
+
+    this.mainService
+      .setCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, 0)
+      .setCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, 20);
+
+    this.mainService.getCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState)
+      .on('set', this.setHeatCoolState.bind(this))
+      .on('get', this.getHeatCoolState.bind(this))
+      .updateValue(this.smartValveState.HeatCool);
+
+    this.mainService.getCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature)
+      .on('set', this.setMainTemp.bind(this))
+      .on('get', this.getMainTemp.bind(this))
+      .setProps({ maxValue: 45, minValue: 15, minStep: 1 })
+      .updateValue(this.smartValveState.Temperature);
 
   }
 
@@ -134,10 +161,10 @@ export class ExamplePlatformAccessory {
       this.platform.log.debug('Switching from Bath to Shower');
       this.smartValveState.BathValveRunning = false as boolean;
       this.smartValveState.ShowerValveRunning = true as boolean;
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, value);
-      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, value);
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, !value);
-      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, !value);  
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.InUse, true as boolean);
+      this.showerHeadService.updateCharacteristic(this.platform.Characteristic.Active, true as boolean);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.InUse, false as boolean);
+      this.bathFillerService.updateCharacteristic(this.platform.Characteristic.Active, false as boolean);  
     } else if (!value as boolean && this.smartValveState.ShowerValveRunning) {
       // Shower is currently running. Turn it off along with the main valve.
       this.platform.log.debug('Switching off shower and main valve');
@@ -168,6 +195,8 @@ export class ExamplePlatformAccessory {
   }
 
   setBathValve(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+
+    this.platform.log.debug('Set Bath Valve Called', value);
 
     // Figure out intent
     if (value as boolean && this.smartValveState.ShowerValveRunning as boolean) {
@@ -207,6 +236,32 @@ export class ExamplePlatformAccessory {
     const isActive = this.smartValveState.BathValveRunning;
     this.platform.log.debug('Get bath valve ->', isActive);
     callback(null, isActive);
+  }
+
+  setMainTemp(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+    this.smartValveState.Temperature = value as number;
+    this.platform.log.debug('Set Characteristic temp -> ', value);
+    this.mainService.updateCharacteristic(this.platform.Characteristic.HeatingThresholdTemperature, value);
+    callback();
+  }
+
+  getMainTemp(callback: CharacteristicSetCallback) {
+    const temp = this.smartValveState.Temperature;
+    this.platform.log.debug('Get Characteristic temp -> ', temp);
+    callback(null, temp);
+  }
+
+  setHeatCoolState(value: CharacteristicValue, callback: CharacteristicSetCallback) {
+    this.smartValveState.HeatCool = value as number;
+    this.platform.log.debug('Set Characteristic Heat/Cool -> ', value);
+    this.mainService.updateCharacteristic(this.platform.Characteristic.TargetHeaterCoolerState, value);
+    callback();
+  }
+
+  getHeatCoolState(callback: CharacteristicSetCallback) {
+    const hc = this.smartValveState.HeatCool as number;
+    this.platform.log.debug('Get Characteristic Heat/Cool -> ', hc);
+    callback(null, hc);
   }
 
 }

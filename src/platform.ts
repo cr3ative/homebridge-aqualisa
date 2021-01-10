@@ -56,7 +56,7 @@ export class ExampleHomebridgePlatform implements DynamicPlatformPlugin {
     // or a user-defined array in the platform config.
     const exampleDevices = [
       {
-        exampleUniqueId: 'ABCD',
+        exampleUniqueId: 'BOOB',
         exampleDisplayName: 'Bathroom Aqualisa SmartValve',
       },
     ];
