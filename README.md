@@ -7,36 +7,49 @@ Base URL is https://aqualisa.like.st/api/
 
 Making blind requests until it works:
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" https://aqualisa.like.st/api/
 {"message":"Missing [N-Meta] header","code":400}%  
+```
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" -H "N-Meta: android;1.0.1" https://aqualisa.like.st/api/
 {"message":"Environment is not supported, should be: local,development,staging,production","code":400}% 
+```
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" -H "N-Meta: android;production; (1.0.1)" https://aqualisa.like.st/api/
 {"message":"Missing device os version","code":400}%
+```
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" -H "N-Meta: android;production;28; (1.0.1)" https://aqualisa.like.st/api/
 {"message":"Missing device","code":400}%
+```
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" -H "N-Meta: android;production;28;pie; (1.0.1)" https://aqualisa.like.st/api/
 {"message":"404: Not Found","code":500}%  
+```
 
 Wheyyyy. Nice of it to tell us what to send it.
 
 Let's try a dingo URL we know of:
 
+```bash
 curl -X GET -H "Accept: application/vnd.nodes.v1+json;" -H "N-Meta: android;production;28;pie; (1.0.1)" https://aqualisa.like.st/api/users
 {"message":"405: Method Not Allowed","code":500}%  
+```
 
 Okay, that's a valid path. Let's find the rest in the Android APK.
 
-Endpoints detected:
+# Endpoints
 
-GET POST DELETE PATCH
+Found interacting via `GET POST DELETE PATCH` verbs:
 
-GET:
+## GET
 
+```
 GET homes/{accesscode}?include=users,showers
 GET homes/{accesscode}?include=showers
 GET marketing/banners/active
@@ -58,9 +71,11 @@ GET users/me
 GET users/profiles/{user_profile_id}/dashboard
 GET users/profiles/{user_profile_id}/dashboard
 GET users/is-email-available
+```
 
-POST:
+## POST
 
+```
 POST homes/{home_id}/showers
 POST homes?include=users,showers
 POST users/profiles
@@ -70,16 +85,20 @@ POST users/login
 POST showers/{serialNumber}/register
 POST users/init-password-reset
 POST users
+```
 
-DELETE:
+## DELETE
 
+```
 DELETE users/profiles/{user_profile_id}/image
 DELETE showers/{shower_id}
 DELETE users/profiles/{user_profile_id}
 DELETE homes/{home_id}/users
+```
 
-PATCH: 
+## PATCH
 
+```
 PATCH showers/{showerId}/flow
 PATCH showers/{showerId}/onOff
 PATCH showers/{showerId}/outlet
@@ -88,3 +107,4 @@ PATCH showers/{showerId}/timer
 PATCH homes/{home_id}?include=users,showers
 PATCH users/password
 PATCH showers/{shower_id}
+```
