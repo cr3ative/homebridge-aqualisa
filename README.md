@@ -47,7 +47,7 @@ Okay, that's a valid path. Let's find the rest in the Android APK.
 
 Found interacting via `GET POST DELETE PATCH` verbs:
 
-## GET
+## GET
 
 ```
 GET homes/{accesscode}?include=users,showers
