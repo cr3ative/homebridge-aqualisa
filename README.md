@@ -108,3 +108,44 @@ PATCH homes/{home_id}?include=users,showers
 PATCH users/password
 PATCH showers/{shower_id}
 ```
+
+# Authentication
+
+Uses bearer tokens. Grab a token like this:
+
+```
+curl -X POST 'https://aqualisa.like.st/api/users/login?email=XXX&password=YYY' \
+--header 'Accept: application/vnd.nodes.v1+json;' \
+--header 'N-Meta: android;production;28;pie; (1.0.1)' \
+```
+
+To get a return like this:
+
+```json
+{
+    "data": {
+        "id": 0000,
+        "email": "XXX",
+        "auth_token": "long_bearer_token",
+        "terms_accepted": "DDD",
+        "profiles": [
+            {
+                "id": 0000,
+                "first_name": "XXX",
+                "last_name": "XXX",
+                "image": null,
+                "nickname": "XXX"
+            }
+        ]
+    }
+}
+```
+
+You can then use `auth_token` in an HTTP header to address the API:
+
+```
+curl -X GET 'https://aqualisa.like.st/api/users/me' \
+--header 'Accept: application/vnd.nodes.v1+json;' \
+--header 'N-Meta: android;production;28;pie; (1.0.1)' \
+--header 'Authorization: Bearer long_bearer_token'
+```
