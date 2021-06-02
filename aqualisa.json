@@ -1,0 +1,1453 @@
+{
+  "info": {
+    "_postman_id": "deedb4f0-f610-4ae6-82aa-2336e656d7d1",
+    "name": "Aqualisa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/users/login?email={{email}}&password={{password}}",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "users",
+            "login"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "{{email}}"
+            },
+            {
+              "key": "password",
+              "value": "{{password}}"
+            }
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "url": {
+              "raw": "https://aqualisa.like.st/api/users/login?email={{email}}&password={{password}}",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "users",
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "email",
+                  "value": "{{email}}"
+                },
+                {
+                  "key": "password",
+                  "value": "{{password}}"
+                }
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"93f171277c3f18fbe6eb39eff7cf95c5\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "1290"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"id\": 1,\n        \"email\": \"example@aqualisa.co.uk\",\n        \"auth_token\": \"long auth token here\",\n        \"terms_accepted\": \"2021-01-06 14:39:08\",\n        \"profiles\": [\n            {\n                \"id\": 1,\n                \"first_name\": \"First\",\n                \"last_name\": \"Last\",\n                \"image\": null,\n                \"nickname\": \"Nick\"\n            }\n        ]\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "homes/{accesscode}?include=users,showers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          },
+          {
+            "key": "Authorization",
+            "value": "",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/homes/{{home_code}}?include=users,showers",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "homes",
+            "{{home_code}}"
+          ],
+          "query": [
+            {
+              "key": "include",
+              "value": "users,showers"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "marketing/banners/active",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/marketing/banners/active",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "marketing",
+            "banners",
+            "active"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/settings",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "settings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "homes/{home_id}/dashboard/stats",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/homes/{{home_id}}/dashboard/stats?start_date=2021-05-28&end_date=2021-06-03",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "homes",
+            "{{home_id}}",
+            "dashboard",
+            "stats"
+          ],
+          "query": [
+            {
+              "key": "start_date",
+              "value": "2021-05-28"
+            },
+            {
+              "key": "end_date",
+              "value": "2021-06-03"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "homes/{home_id}/dashboard/graph",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/homes/{{home_id}}/dashboard/graph?start_date=2021-05-28&end_date=2021-06-03&type=water_usage",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "homes",
+            "{{home_id}}",
+            "dashboard",
+            "graph"
+          ],
+          "query": [
+            {
+              "key": "start_date",
+              "value": "2021-05-28"
+            },
+            {
+              "key": "end_date",
+              "value": "2021-06-03"
+            },
+            {
+              "key": "type",
+              "value": "water_usage",
+              "description": "duration, cost, water_usage"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "homes/{home_id}/dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/homes/{{home_id}}/dashboard?type=cost&start_date=2021-05-21&end_date=2021-05-27",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "homes",
+            "{{home_id}}",
+            "dashboard"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "cost",
+              "description": "duration, cost, water_usage"
+            },
+            {
+              "key": "start_date",
+              "value": "2021-05-21"
+            },
+            {
+              "key": "end_date",
+              "value": "2021-05-27"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users/homes?include=users,showers",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/users/homes?include=users,showers",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "users",
+            "homes"
+          ],
+          "query": [
+            {
+              "key": "include",
+              "value": "users,showers"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "marketing/news-items",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/marketing/news-items",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "marketing",
+            "news-items"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/timer",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/timer",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "timer"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/timer",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "time_set",
+              "value": "400",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/timer",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "timer"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "time_set",
+                  "value": "400",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/timer",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "showers",
+                "{{shower_id}}",
+                "timer"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"abb133bffd0f47ff1cc56693c1a15a2d\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "25"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"time_set\": 400\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "showers/{showerId}/onOff",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/onOff?user_profile_id=3948",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "onOff"
+          ],
+          "query": [
+            {
+              "key": "user_profile_id",
+              "value": "3948"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/onOff",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "in_use",
+              "value": "0",
+              "description": "This is delayed in updating from the shower. The initial return will be the same state it was in before. Do a GET a few seconds later if you wish to confirm success",
+              "type": "text"
+            },
+            {
+              "key": "user_profile_id",
+              "value": "3948",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/onOff",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "onOff"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "in_use",
+                  "value": "0",
+                  "type": "text"
+                },
+                {
+                  "key": "user_profile_id",
+                  "value": "3948",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/onOff",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "showers",
+                "{{shower_id}}",
+                "onOff"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"df9c08e1f06bf3e4aa10862e2af510f4\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "24"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"in_use\": true\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "showers/{showerId}/temperature",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/temperature",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "temperature"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/temperature",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "temperature",
+              "value": "4000",
+              "description": "Centigrade*100",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/temperature",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "temperature"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "temperature",
+                  "value": "5100",
+                  "description": "Centigrade*100",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/temperature",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "showers",
+                "{{shower_id}}",
+                "temperature"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"d10d77b057a3b72b9e27fe51e969f9ef\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "31"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"temperature\": \"5100\"\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "showers/{showerId}/flow",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/flow",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "flow"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/flow",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "flow",
+              "value": "Max",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/flow",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "flow"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "flow",
+                  "value": "Max",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/flow",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "showers",
+                "{{shower_id}}",
+                "flow"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"af304183d085c3ba0fcb455670e63be9\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "23"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"flow\": \"Max\"\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "showers/{serialNumber}/info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_serial}}/info",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_serial}}",
+            "info"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/outlet",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/outlet",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "outlet"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "showers/{showerId}/outlet",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "outlet",
+              "value": "B",
+              "description": "Immediate reply",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/outlet",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "outlet"
+          ]
+        }
+      },
+      "response": [
+        {
+          "name": "example",
+          "originalRequest": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "{{Accept}}"
+              },
+              {
+                "key": "N-Meta",
+                "value": "{{N-Meta}}"
+              }
+            ],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "outlet",
+                  "value": "B",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/outlet",
+              "protocol": "https",
+              "host": [
+                "aqualisa",
+                "like",
+                "st"
+              ],
+              "path": [
+                "api",
+                "showers",
+                "{{shower_id}}",
+                "outlet"
+              ]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Cache-Control",
+              "value": "private, must-revalidate"
+            },
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Etag",
+              "value": "\"d13220db8d41a67b1e199b97f6d35299\""
+            },
+            {
+              "key": "Server",
+              "value": "nginx/1.21.0"
+            },
+            {
+              "key": "X-Powered-By",
+              "value": "PHP/7.2.34-21+ubuntu18.04.1+deb.sury.org+1"
+            },
+            {
+              "key": "Content-Length",
+              "value": "23"
+            }
+          ],
+          "cookie": [],
+          "body": "{\n    \"data\": {\n        \"outlet\": \"B\"\n    }\n}"
+        }
+      ]
+    },
+    {
+      "name": "showers/{showerId}/settings",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/showers/{{shower_id}}/settings",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "showers",
+            "{{shower_id}}",
+            "settings"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users/me",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/users/me",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users/profiles/{user_profile_id}/dashboard",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/users/profiles/{{user_profile_id}}/dashboard?type=water_usage&scope=last_month&home_id={{home_id}}",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profiles",
+            "{{user_profile_id}}",
+            "dashboard"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "water_usage",
+              "description": "water_usage, duration, cost"
+            },
+            {
+              "key": "scope",
+              "value": "last_month",
+              "description": "last_day, last_week, last_month"
+            },
+            {
+              "key": "home_id",
+              "value": "{{home_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "users/profiles/{user_profile_id}/dashboard/graph",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "{{Accept}}"
+          },
+          {
+            "key": "N-Meta",
+            "value": "{{N-Meta}}"
+          }
+        ],
+        "url": {
+          "raw": "https://aqualisa.like.st/api/users/profiles/{{user_profile_id}}/dashboard/graph?type=water_usage&scope=last_month&home_id={{home_id}}",
+          "protocol": "https",
+          "host": [
+            "aqualisa",
+            "like",
+            "st"
+          ],
+          "path": [
+            "api",
+            "users",
+            "profiles",
+            "{{user_profile_id}}",
+            "dashboard",
+            "graph"
+          ],
+          "query": [
+            {
+              "key": "type",
+              "value": "water_usage",
+              "description": "water_usage, duration, cost"
+            },
+            {
+              "key": "scope",
+              "value": "last_month",
+              "description": "last_day, last_week, last_month"
+            },
+            {
+              "key": "home_id",
+              "value": "{{home_id}}"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearer}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "email",
+      "value": "example@aqualisa.com"
+    },
+    {
+      "key": "password",
+      "value": "password"
+    },
+    {
+      "key": "bearer",
+      "value": "long bearer token from login response"
+    },
+    {
+      "key": "home_code",
+      "value": "home access code"
+    },
+    {
+      "key": "home_id",
+      "value": "home ID"
+    },
+    {
+      "key": "shower_id",
+      "value": "shower ID"
+    },
+    {
+      "key": "shower_serial",
+      "value": "shower serial number"
+    },
+    {
+      "key": "user_profile_id",
+      "value": "user profile ID"
+    },
+    {
+      "key": "N-Meta",
+      "value": "ios;development;1;14.6;iPhone13,1"
+    },
+    {
+      "key": "Accept",
+      "value": "application/vnd.nodes.v1+json;"
+    }
+  ]
+}
