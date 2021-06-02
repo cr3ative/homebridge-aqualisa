@@ -149,3 +149,13 @@ curl -X GET 'https://aqualisa.like.st/api/users/me' \
 --header 'N-Meta: android;production;28;pie; (1.0.1)' \
 --header 'Authorization: Bearer long_bearer_token'
 ```
+
+# DNS enquiries from device
+
+* `aqualisa-mqtt.like.st` is looked up by the controller. Current response is `A aqualisa-mqtt.like.st CNAME k8s.aqualisa.like.st A 52.51.16.1 A 54.78.109.102`
+* `aqualisa.like.st` (main API)
+* `pool.ntp.org` (naughty, should be vendor-specific)
+
+# MQTT
+
+The MQTT server it connects to is `aqualisa-mqtt.like.st` on port `8883`.
