@@ -110,7 +110,9 @@ PATCH showers/{shower_id}
 Probably to do with setting the WiFi up. Haven't looked in to it.
 
 ```
-GET http://192.168.4.1/connStatus?apOff=1
+GET http://192.168.4.1/connStatus?apOff=1               (connection status and serial number)
+POST http://192.168.4.1/updateMQTTDetails?Var1=XX       (interesting - local MQTT or proxy it?)
+POST http://192.168.4.1/updateDetails?Var1=XX&Var2=XX   (base64 encoded)
 ```
 
 # Shower controller network traffic
